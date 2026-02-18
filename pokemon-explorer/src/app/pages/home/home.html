@@ -1,0 +1,60 @@
+<div class="home">
+  <div class="home-header">
+    <h1 class="home-title">Pokédex</h1>
+    <p class="home-subtitle">Explorez les 151 Pokémon de la première génération</p>
+  </div>
+
+  <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
+    <div class="form-group">
+      <input
+        type="text"
+        formControlName="search"
+        placeholder="Rechercher un Pokémon..."
+        class="search-input"
+      />
+      @if (searchForm.get('search')?.invalid && searchForm.get('search')?.touched) {
+        <span class="field-error">La recherche doit contenir au minimum 2 caractères.</span>
+      }
+    </div>
+    <div class="form-actions">
+      <button type="submit" [disabled]="searchForm.invalid" class="btn btn-primary">
+        Rechercher
+      </button>
+      <button type="button" (click)="onReset()" class="btn btn-secondary">
+        Réinitialiser
+      </button>
+    </div>
+  </form>
+
+  @switch (loadState) {
+    @case (loadStateEnum.LOADING) {
+      <div class="state-container">
+        <div class="spinner"></div>
+        <p>Chargement des Pokémon...</p>
+      </div>
+    }
+    @case (loadStateEnum.ERROR) {
+      <div class="state-container error-container">
+        <p class="error-message">{{ errorMessage }}</p>
+        <button (click)="loadPokemons()" class="btn btn-primary">Réessayer</button>
+      </div>
+    }
+    @case (loadStateEnum.SUCCESS) {
+      @if (filteredPokemons.length === 0) {
+        <div class="state-container">
+          <p class="no-results">Aucun Pokémon trouvé pour cette recherche.</p>
+        </div>
+      } @else {
+        <p class="results-count">{{ filteredPokemons.length }} Pokémon trouvé(s)</p>
+        <div class="pokemon-grid">
+          @for (pokemon of filteredPokemons; track pokemon.name) {
+            <app-pokemon-card
+              [name]="pokemon.name"
+              [id]="getPokemonId(pokemon.url)"
+            />
+          }
+        </div>
+      }
+    }
+  }
+</div>
