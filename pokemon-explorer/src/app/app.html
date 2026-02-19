@@ -1,7 +1,11 @@
 <header class="app-header">
-  <a routerLink="/" class="app-logo">Pokédex Angular</a>
+  <span class="app-logo" (click)="goBack()">Pokédex Angular</span>
 </header>
 
 <main>
-  <router-outlet />
+  @if (currentPokemon) {
+    <app-pokemon-detail [name]="currentPokemon" (back)="goBack()" />
+  } @else {
+    <app-home (navigate)="navigateTo($event)" />
+  }
 </main>

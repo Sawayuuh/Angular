@@ -1,0 +1,81 @@
+<div class="detail-page">
+  <button (click)="back.emit()" class="back-link">← Retour au Pokédex</button>
+
+  @if (isLoading) {
+    <div class="state-container">
+      <div class="spinner"></div>
+      <p>Chargement du Pokémon...</p>
+    </div>
+  } @else if (isError) {
+    <div class="state-container error-container">
+      <p class="error-message">{{ errorMessage }}</p>
+      <button (click)="back.emit()" class="btn btn-primary">Retour à l'accueil</button>
+    </div>
+  } @else if (isSuccess) {
+    @if (pokemon) {
+      <div class="detail-card">
+        <div class="detail-header">
+          <img
+            [src]="pokemon.sprites.front_default"
+            [alt]="pokemon.name"
+            class="detail-sprite"
+          />
+          <div class="detail-title">
+            <h1 class="detail-name">{{ capitalize(pokemon.name) }}</h1>
+            <span class="detail-id">#{{ pokemon.id }}</span>
+          </div>
+        </div>
+
+        <div class="detail-types">
+          @for (t of pokemon.types; track t.slot) {
+            <span class="type-badge type-{{ t.type.name }}">{{ t.type.name }}</span>
+          }
+        </div>
+
+        <div class="detail-info">
+          <div class="info-item">
+            <span class="info-label">Taille</span>
+            <span class="info-value">{{ pokemon.height / 10 }} m</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Poids</span>
+            <span class="info-value">{{ pokemon.weight / 10 }} kg</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Expérience de base</span>
+            <span class="info-value">{{ pokemon.base_experience }}</span>
+          </div>
+        </div>
+
+        <section class="detail-section">
+          <h2>Statistiques</h2>
+          <div class="stats">
+            @for (stat of pokemon.stats; track stat.stat.name) {
+              <div class="stat-item">
+                <span class="stat-name">{{ stat.stat.name }}</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar" [style.width.%]="statPercent(stat.base_stat)"></div>
+                </div>
+                <span class="stat-value">{{ stat.base_stat }}</span>
+              </div>
+            }
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h2>Capacités</h2>
+          <div class="abilities">
+            @for (a of pokemon.abilities; track a.slot) {
+              <span class="ability-badge" [class.hidden-ability]="a.is_hidden">
+                {{ a.ability.name }}
+                @if (a.is_hidden) {
+                  <em>(cachée)</em>
+                }
+              </span>
+            }
+          </div>
+        </section>
+      </div>
+    }
+  }
+</div>

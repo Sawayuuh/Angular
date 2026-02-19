@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoadState } from '../../enums/load-state.enum';
 import { IPokemonListItem } from '../../interfaces/pokemon';
@@ -15,12 +15,16 @@ export class Home {
   private readonly pokemonService: PokemonService = inject(PokemonService);
   private readonly fb: FormBuilder = inject(FormBuilder);
 
+  @Output() navigate = new EventEmitter<string>();
+
   public allPokemons: IPokemonListItem[] = [];
   public filteredPokemons: IPokemonListItem[] = [];
   public loadState: LoadState = LoadState.IDLE;
   public errorMessage: string = '';
 
-  public readonly loadStateEnum: typeof LoadState = LoadState;
+  public get isLoading(): boolean { return this.loadState === LoadState.LOADING; }
+  public get isSuccess(): boolean { return this.loadState === LoadState.SUCCESS; }
+  public get isError(): boolean { return this.loadState === LoadState.ERROR; }
 
   public searchForm: FormGroup = this.fb.group({
     search: ['', [Validators.minLength(2)]]
@@ -74,6 +78,10 @@ export class Home {
    * @param url the API URL of the Pokémon.
    * @returns the Pokémon id as a number.
    */
+  public onSelectPokemon(name: string): void {
+    this.navigate.emit(name);
+  }
+
   public getPokemonId(url: string): number {
     const parts = url.split('/').filter(p => p);
     return parseInt(parts[parts.length - 1], 10);

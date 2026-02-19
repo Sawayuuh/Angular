@@ -26,35 +26,32 @@
     </div>
   </form>
 
-  @switch (loadState) {
-    @case (loadStateEnum.LOADING) {
+  @if (isLoading) {
+    <div class="state-container">
+      <div class="spinner"></div>
+      <p>Chargement des Pokémon...</p>
+    </div>
+  } @else if (isError) {
+    <div class="state-container error-container">
+      <p class="error-message">{{ errorMessage }}</p>
+      <button (click)="loadPokemons()" class="btn btn-primary">Réessayer</button>
+    </div>
+  } @else if (isSuccess) {
+    @if (filteredPokemons.length === 0) {
       <div class="state-container">
-        <div class="spinner"></div>
-        <p>Chargement des Pokémon...</p>
+        <p class="no-results">Aucun Pokémon trouvé pour cette recherche.</p>
       </div>
-    }
-    @case (loadStateEnum.ERROR) {
-      <div class="state-container error-container">
-        <p class="error-message">{{ errorMessage }}</p>
-        <button (click)="loadPokemons()" class="btn btn-primary">Réessayer</button>
+    } @else {
+      <p class="results-count">{{ filteredPokemons.length }} Pokémon trouvé(s)</p>
+      <div class="pokemon-grid">
+        @for (pokemon of filteredPokemons; track pokemon.name) {
+          <app-pokemon-card
+            [name]="pokemon.name"
+            [id]="getPokemonId(pokemon.url)"
+            (select)="onSelectPokemon($event)"
+          />
+        }
       </div>
-    }
-    @case (loadStateEnum.SUCCESS) {
-      @if (filteredPokemons.length === 0) {
-        <div class="state-container">
-          <p class="no-results">Aucun Pokémon trouvé pour cette recherche.</p>
-        </div>
-      } @else {
-        <p class="results-count">{{ filteredPokemons.length }} Pokémon trouvé(s)</p>
-        <div class="pokemon-grid">
-          @for (pokemon of filteredPokemons; track pokemon.name) {
-            <app-pokemon-card
-              [name]="pokemon.name"
-              [id]="getPokemonId(pokemon.url)"
-            />
-          }
-        </div>
-      }
     }
   }
 </div>

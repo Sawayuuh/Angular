@@ -1,9 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-pokemon-card',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './pokemon-card.html',
   styleUrl: './pokemon-card.css'
 })
@@ -17,6 +16,8 @@ export class PokemonCard {
    * The Pokémon id extracted from its API url.
    */
   @Input() id: number = 0;
+
+  @Output() select = new EventEmitter<string>();
 
   /**
    * Build the sprite URL from the Pokémon id.

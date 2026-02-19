@@ -1,10 +1,21 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Home } from './pages/home/home';
+import { PokemonDetail } from './pages/pokemon-detail/pokemon-detail';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink],
+  imports: [Home, PokemonDetail],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {}
+export class App {
+  public currentPokemon: string = '';
+
+  public navigateTo(name: string): void {
+    this.currentPokemon = name;
+  }
+
+  public goBack(): void {
+    this.currentPokemon = '';
+  }
+}

@@ -1,5 +1,5 @@
-<a [routerLink]="['/pokemon', name]" class="pokemon-card">
+<div class="pokemon-card" (click)="select.emit(name)">
   <img [src]="spriteUrl" [alt]="name" class="pokemon-sprite" />
   <span class="pokemon-id">#{{ formattedId }}</span>
   <span class="pokemon-name">{{ name }}</span>
-</a>
+</div>
